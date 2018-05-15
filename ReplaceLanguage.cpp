@@ -10,6 +10,8 @@
 #include <codecvt>
 
 
+const wchar_t BOM_UTF16LE = 0xFEFF;
+
 struct DataRow {
 	unsigned long sheet;
 	unsigned long id1;
@@ -71,23 +73,26 @@ int main(int argc, char *argv[])
 {
 	if (argc < 4)
 	{
-		std::cerr   << "Usage: " << argv[0] << " <translated> <original> <target>\n\n"
-					<< "<translated>\t: file which contains translated/modified strings\n"
+		std::cerr   << "Usage: " << argv[0] << " <replace> <original> <target>\n\n"
+					<< "<replace>\t: file which contains translated/modified strings\n"
 					<< "<original>\t: original file with string table\n"
 					<< "<target>\t: output file" << std::endl;
 		return 1;
 	}
 
-	std::string translated_name = argv[1];
+	std::string replace_name = argv[1];
 	std::string original_name = argv[2];
 	std::string target_name = argv[3];
 
-	std::wifstream translated(translated_name, std::ios::binary);
-	if (translated.fail()){
-		std::cerr << "Error opening " << translated_name << std::endl;
+	std::wifstream replace(replace_name, std::ios::binary);
+	if (replace.fail()){
+		std::cerr << "Error opening " << replace_name << std::endl;
 		return 1;
 	}
-	translated.imbue(std::locale(translated.getloc(), new std::codecvt_utf16<wchar_t, 0x10ffff, std::little_endian>));
+	replace.imbue(std::locale(replace.getloc(), new std::codecvt_utf16<wchar_t, 0x10ffff, std::little_endian>));
+	if (replace.get() != BOM_UTF16LE) {
+		replace.unget();
+	}
 
 	std::wifstream original(original_name, std::ios::binary);
 	if (original.fail()){
@@ -95,6 +100,9 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 	original.imbue(std::locale(original.getloc(), new std::codecvt_utf16<wchar_t, 0x10ffff, std::little_endian>));
+	if (original.get() != BOM_UTF16LE) {
+		original.unget();
+	}
 
 	std::wofstream target(target_name, std::ios::binary);
 	if (target.fail()){
@@ -102,13 +110,14 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 	target.imbue(std::locale(target.getloc(), new std::codecvt_utf16<wchar_t, 0x10ffff, std::little_endian>));
+	target.put(BOM_UTF16LE);
 
 	///create lookup table
 	std::vector<DataRow> lookup;
 	std::wstring row;
 
-	std::cout << "Reading \"" << translated_name << "\"..." ;
-	while (std::getline(translated, row)){
+	std::cout << "Reading \"" << replace_name << "\"..." ;
+	while (std::getline(replace, row)){
 		DataRow dataRow;
 		std::wstringstream ss;
 
@@ -180,7 +189,7 @@ int main(int argc, char *argv[])
 		target << originalRow << '\n';
 	}
 
-	std::cout << "Processed lines: " << changed + unchanged <<  " (translated: " << changed << ", original: " << unchanged << ")\nDone!" << std::endl;
+	std::cout << "Processed lines: " << changed + unchanged <<  " (replaced: " << changed << ", original: " << unchanged << ")\nDone!" << std::endl;
 
 	return 0;
 }
