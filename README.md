@@ -7,8 +7,8 @@ Tools to decrypt/encrypt localization files: [BDOcrypt](https://github.com/AMGar
 ReplaceLanguage \<replace\> \<original\> \<target\>
 
 \<replace\>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: file which contains translated/modified strings<br>
-\<original\>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: original file with string table<br>
-\<target\>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: output file<br>
+\<original\>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: original file with string table<br>
+\<target\>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: output file<br>
 
 
 languagedata_??.txt files contain the following tab separated data (\t = tab):
