@@ -1,5 +1,5 @@
 # ReplaceLanguage
-Tool for replacing texts in Black Desert Online *decrypted* localization files (\<game\>\ads\\*.loc).<br>
+Tool for replacing texts in *decrypted* Black Desert Online localization files (\<game\>\ads\\*.loc).<br>
 Tools to decrypt/encrypt localization files: [BDOcrypt](https://github.com/AMGarkin/BDOcrypt)
 
 
@@ -11,13 +11,13 @@ ReplaceLanguage \<translated\> \<original\> \<target\>
 \<target\>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: output file<br>
 
 
-languagedata_??.txt files contains the following tab separated data (\t = tab):
+languagedata_??.txt files contain the following tab separated data (\t = tab):
 
     <sheet_number>\t<ID1>\t<ID2>\t<ID3>\t<ID4>\t"<localized_text>"
 
 Text file uses UTF-16 (UCS-2 Little Endian no BOM) encoding.
 
-ReplaceLanguage reads \<original\> file line by line and tries to find corresponding line in \<translated\> file. If the line is found, program replaces (only) localized_text with the value from <translated>. Otherwise line stays untouched.
+ReplaceLanguage reads \<original\> file line by line and tries to find corresponding line in \<translated\> file. If the line is found, program replaces localized_text with the value from <translated>. Otherwise line stays untouched.
 
 This program can be used for example to replace guild quest texts (guild_quest_list_en.txt) in languagedata_en.txt after patch:
 
