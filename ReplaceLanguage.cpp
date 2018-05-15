@@ -6,16 +6,17 @@
 #include <vector>
 #include <map>
 #include <algorithm>
+#include <locale>
+#include <codecvt>
+
 
 struct DataRow {
-	int sheet;
-	int id1;
-	int id2;
-	int id3;
-	int id4;
-	std::wstring kr;
+	unsigned long sheet;
+	unsigned long id1;
+	unsigned long id2;
+	unsigned long id3;
+	unsigned long id4;
 	std::wstring loc;
-	std::wstring rest;
 
 	///overloading operator < because of std::sort function
 	bool operator < (const DataRow& row) const {
@@ -47,9 +48,7 @@ std::wistream& operator>>(std::wistream& is, DataRow& data)
 	is >> data.id3;
 	is >> data.id4;
 	is >> std::ws; //discard whitespace
-	std::getline(is, data.kr, L'\t');
-	std::getline(is, data.loc, L'\t');
-	std::getline(is, data.rest);
+	std::getline(is, data.loc);
 
 	return is;
 }
@@ -62,9 +61,7 @@ std::wofstream& operator<<(std::wofstream& os, DataRow& data)
 	os << data.id2   << L'\t';
 	os << data.id3   << L'\t';
 	os << data.id4   << L'\t';
-	os << data.kr    << L'\t';
-	os << data.loc   << L'\t';
-	os << data.rest;
+	os << data.loc;
 
 	return os;
 }
@@ -85,21 +82,26 @@ int main(int argc, char *argv[])
 	std::string original_name = argv[2];
 	std::string target_name = argv[3];
 
-	std::wifstream translated(translated_name);
+	std::wifstream translated(translated_name, std::ios::binary);
 	if (translated.fail()){
 		std::cerr << "Error opening " << translated_name << std::endl;
 		return 1;
 	}
-	std::wifstream original(original_name);
+	translated.imbue(std::locale(translated.getloc(), new std::codecvt_utf16<wchar_t, 0x10ffff, std::little_endian>));
+
+	std::wifstream original(original_name, std::ios::binary);
 	if (original.fail()){
 		std::cerr << "Error opening " << original_name << std::endl;
 		return 1;
 	}
-	std::wofstream target(target_name);
+	original.imbue(std::locale(original.getloc(), new std::codecvt_utf16<wchar_t, 0x10ffff, std::little_endian>));
+
+	std::wofstream target(target_name, std::ios::binary);
 	if (target.fail()){
 		std::cerr << "Error opening " << target_name << std::endl;
 		return 1;
 	}
+	target.imbue(std::locale(target.getloc(), new std::codecvt_utf16<wchar_t, 0x10ffff, std::little_endian>));
 
 	///create lookup table
 	std::vector<DataRow> lookup;
@@ -108,9 +110,10 @@ int main(int argc, char *argv[])
 	std::cout << "Reading \"" << translated_name << "\"..." ;
 	while (std::getline(translated, row)){
 		DataRow dataRow;
-		std::wstringstream wss(row);
+		std::wstringstream ss;
 
-		wss >> dataRow;
+		ss.str(row);
+		ss >> dataRow;
 
 		lookup.push_back(dataRow);
 	}
@@ -143,11 +146,11 @@ int main(int argc, char *argv[])
 	std::map<int, std::pair<std::vector<DataRow>::iterator, std::vector<DataRow>::iterator> >::iterator iHelp; ///I love this type!
 
 	while (std::getline(original, row)){
-		std::wstringstream wss;
 		DataRow originalRow;
+		std::wstringstream ss;
 
-		wss.str(row);
-		wss >> originalRow;
+		ss.str(row);
+		ss >> originalRow;
 
 		found = false;
 		iHelp = lookupHelper.find(originalRow.sheet);
