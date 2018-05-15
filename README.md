@@ -11,8 +11,11 @@ ReplaceLanguage \<translated\> \<original\> \<target\>
 \<target\>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: output file<br>
 
 
-Languagedata_??.txt files contains the following tab separated data ("\t" = tab):
-\<sheet_number\>\t\<ID1\>\t\<ID2\>\t\<ID3\>\t\<ID4\>\t\<korean_text\>\t\<localized_text\>\t\<version\>\[\t\<note\>\]
+languagedata_??.txt files contains the following tab separated data (\t = tab):
+
+    <sheet_number>\t<ID1>\t<ID2>\t<ID3>\t<ID4>\t"<localized_text>"
+
+Text file uses UTF-16 (UCS-2 Little Endian no BOM) encoding.
 
 ReplaceLanguage reads \<original\> file line by line and tries to find corresponding line in \<translated\> file. If the line is found, program replaces (only) localized_text with the value from <translated>. Otherwise line stays untouched.
 
