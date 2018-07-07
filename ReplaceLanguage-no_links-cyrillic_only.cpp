@@ -183,7 +183,7 @@ int main(int argc, char *argv[])
 					originalRow.id2 == it->id2 &&
 					originalRow.id3 == it->id3 &&
 					originalRow.id4 == it->id4 &&
-					originalRow.loc.substr(0,4) != L"http" &&
+					originalRow.loc.substr(1,4) != L"http" &&
 					isUTF16Cyrillic(it->loc)) {
 
 					found = true;
