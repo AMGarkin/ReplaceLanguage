@@ -80,6 +80,11 @@ int main(int argc, char *argv[])
 	std::string original_name = argv[2];
 	std::string target_name = argv[3];
 
+	std::ofstream file(target_name, std::ios::binary);
+	unsigned char BOM_UTF8[] = { 0xEF,0xBB,0xBF };
+	file.write((char*)BOM_UTF8, sizeof(BOM_UTF8));
+	file.close();
+
 	std::wifstream replace(replace_name, std::ios::binary);
 	if (replace.fail()){
 		std::cerr << "Error opening " << replace_name << std::endl;
@@ -97,6 +102,10 @@ int main(int argc, char *argv[])
 		std::cerr << "Error opening " << target_name << std::endl;
 		return 1;
 	}
+
+	replace.ignore(3);
+	original.ignore(3);
+	target.seekp(3);
 
 	///create lookup table
 	std::vector<DataRow> lookup;
