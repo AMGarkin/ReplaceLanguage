@@ -17,7 +17,7 @@ languagedata_??.txt files contain the following tab separated data (\t = tab):
 
 Text file uses UTF-16LE encoding.
 
-ReplaceLanguage reads \<original\> file line by line and tries to find corresponding line in \<replace\> file. If the line is found, program replaces localized_text with the value from <translated>. Otherwise line stays untouched.
+ReplaceLanguage reads \<original\> file line by line and tries to find corresponding line in \<replace\> file. If the line is found, program replaces localized_text with the value from \<translated\>. Otherwise line stays untouched.
 
 This program can be used for example to replace guild quest texts (guild_quest_list_en.txt) in languagedata_en.txt after patch:
 
